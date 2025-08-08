@@ -1,19 +1,44 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 
 function Navbar() {
   const [isWalletConnected, setIsWalletConnected] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Dashboard', href: '/dashboard' },
   ];
 
+  // Check authentication status on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    const userData = localStorage.getItem('user');
+    
+    if (token && userData) {
+      setIsAuthenticated(true);
+      setUser(JSON.parse(userData));
+    } else {
+      setIsAuthenticated(false);
+      setUser(null);
+    }
+  }, []);
+
   const handleWalletConnect = () => {
     setIsWalletConnected(!isWalletConnected);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    setIsAuthenticated(false);
+    setUser(null);
+    navigate('/');
   };
 
   return (
@@ -50,13 +75,35 @@ function Navbar() {
           </div>
 
           <div className="flex items-center space-x-4">
+            {/* Authentication Buttons */}
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-700">
+                  Welcome, {user?.name || 'User'}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors duration-200"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-primary-600 text-white hover:bg-primary-700 transition-colors duration-200"
+              >
+                Sign In
+              </Link>
+            )}
+
             <button
               onClick={handleWalletConnect}
               className={clsx(
                 'px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200',
                 isWalletConnected
                   ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                  : 'bg-primary-600 text-white hover:bg-primary-700'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               )}
             >
               {isWalletConnected ? 'Wallet Connected' : 'Connect Wallet'}
@@ -93,6 +140,32 @@ function Navbar() {
                   {item.name}
                 </Link>
               ))}
+              
+              {/* Mobile Authentication */}
+              {isAuthenticated ? (
+                <div className="px-3 py-2">
+                  <p className="text-sm text-gray-700 mb-2">
+                    Welcome, {user?.name || 'User'}
+                  </p>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors duration-200"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/login"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-primary-600 hover:text-primary-700 hover:bg-primary-50 transition-colors duration-200"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Sign In
+                </Link>
+              )}
             </div>
           </div>
         )}
