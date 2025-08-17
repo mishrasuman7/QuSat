@@ -10,9 +10,9 @@ A decentralized platform to tokenize data center & satellite gateway assets, bus
 - **Frontend:** React.js
 - **Backend:** Node.js, Express.js
 - **Database:** MongoDB
-- **Authentication:** JWT, OAuth (optional)
-- **Blockchain:** (ERC-721 / ERC-1155 for NFTs, optional)
-- **AI:** Integrations (optional)
+- **Authentication:** JWT, OAuth
+- **Blockchain:** (ERC-721 / ERC-1155 for NFTs)
+- **AI:** Integrations
 
 ## 💡 Features
 
