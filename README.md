@@ -1,7 +1,7 @@
 # QuSat
 Tokenized Platform for Data Center &amp; Satellite Assets | Built with MERN + Blockchain + AI
 
-# QuSat - Hackathon Project 🚀
+# QuSat - Blockchain Tech Project 🚀
 
 A decentralized platform to tokenize data center & satellite gateway assets, business services, and licensed content using Blockchain + AI.
 
